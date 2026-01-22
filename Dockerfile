@@ -2,12 +2,15 @@ FROM node:18
 
 WORKDIR /app
 
-COPY package*.json ./
+# Copy dependencies first for cache use
+COPY elms-app/package*.json ./
+
 RUN npm install
 
-COPY . .
+# Copy full app
+COPY elms-app/ ./
 
 EXPOSE 3000
 
-CMD ["node", "elms-app/app.js"]
+CMD ["node", "app.js"]
 
