@@ -5,29 +5,27 @@ const path = require("path");
 const app = express();
 app.use(express.json());
 
-// Serve static LMS frontend (index.html + JS)
+// Serve static HTML (index + signup)
 app.use(express.static(path.join(__dirname, "public")));
 
-// DB Connection via ECS task environment variables
+// ---- DB Connection (from ECS Task Env) ----
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,   // example: elms-db.xxxxxxx.us-east-1.rds.amazonaws.com
-  user: process.env.DB_USER,   // example: admin
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME // example: elearning
+  database: process.env.DB_NAME
 });
 
-// ALB Target Group Health Check
+// ---- Health Check for ALB ----
 app.get("/health", (req, res) => {
-  return res.status(200).json({ status: "UP", service: "ELMS-APP" });
+  res.status(200).json({ status: "UP", service: "ELMS-APP" });
 });
 
-// -------------------------
-// USER REGISTRATION API
-// -------------------------
+// ---- REGISTER / SIGNUP ----
 app.post("/register", (req, res) => {
-  const { email, username, password } = req.body;
+  const { username, email, password } = req.body;
 
-  if (!email || !username || !password) {
+  if (!username || !email || !password) {
     return res.status(400).json({ message: "Missing fields" });
   }
 
@@ -37,16 +35,14 @@ app.post("/register", (req, res) => {
     (err) => {
       if (err) {
         console.log("DB Error:", err);
-        return res.status(500).json({ message: "DB Error" });
+        return res.status(500).json({ message: "Database Error" });
       }
       return res.status(201).json({ message: "User Registered Successfully" });
     }
   );
 });
 
-// -------------------------
-// USER LOGIN API
-// -------------------------
+// ---- LOGIN ----
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
@@ -55,12 +51,12 @@ app.post("/login", (req, res) => {
   }
 
   db.query(
-    "SELECT username FROM users WHERE email = ? AND password = ?",
+    "SELECT username FROM users WHERE email=? AND password=?",
     [email, password],
     (err, results) => {
       if (err) {
         console.log("DB Error:", err);
-        return res.status(500).json({ message: "DB Error" });
+        return res.status(500).json({ message: "Database Error" });
       }
 
       if (results.length === 0) {
@@ -75,9 +71,7 @@ app.post("/login", (req, res) => {
   );
 });
 
-// -------------------------
-// START APP FOR ECS
-// -------------------------
+// ---- ECS LISTENING ----
 app.listen(3000, () => {
   console.log("ELMS Backend running on port 3000");
 });

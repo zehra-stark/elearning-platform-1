@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Signup – LMS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body { margin:0; background:#111; color:white; font-family:Arial; }
+    .box {
+      margin:80px auto; width:380px; padding:28px;
+      background:#1c1c1c; border-radius:8px;
+      box-shadow:0 0 12px rgba(255,128,0,0.4);
+    }
+    h2 { color:#ff7a18; text-align:center; }
+    input {
+      width:100%; padding:10px; margin:8px 0;
+      background:#111; border:1px solid #333; border-radius:4px; color:white;
+    }
+    button {
+      width:100%; padding:12px; margin-top:12px;
+      background:linear-gradient(135deg,#ff7a18,#ff9f43);
+      border:none; border-radius:5px; font-size:16px; cursor:pointer;
+    }
+    a { color:#ff9f43; text-decoration:none; }
+  </style>
+</head>
+
+<body>
+<div class="box">
+  <h2>Create Account</h2>
+  <input id="username" placeholder="Username">
+  <input id="email" type="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="signupUser()">Sign Up</button>
+  <p id="msg" style="text-align:center; margin-top:10px;"></p>
+  <p style="text-align:center;">Already have an account? <a href="index.html">Login</a></p>
+</div>
+
+<script>
+async function signupUser() {
+  const msg = document.getElementById("msg");
+  msg.innerText="Submitting...";
+  msg.style.color="#ff9f43";
+
+  const username=document.getElementById("username").value;
+  const email=document.getElementById("email").value;
+  const password=document.getElementById("password").value;
+
+  try {
+    const res=await fetch("/register",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({ username,email,password })
+    });
+
+    const result=await res.text();
+    msg.innerText=result;
+    msg.style.color="lightgreen";
+
+  } catch(e){
+    msg.innerText="Backend unreachable";
+    msg.style.color="red";
+  }
+}
+</script>
+</body>
+</html>
+

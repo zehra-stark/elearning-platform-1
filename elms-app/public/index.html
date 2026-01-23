@@ -1,225 +1,140 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>WhizCloud – E-Learning LMS</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+  <meta charset="UTF-8" />
+  <title>WhizCloud – LMS Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <style>
-      body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #111;
-        color: #fff;
-      }
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+    }
+    header {
+      background: linear-gradient(135deg, #000000, #ff7a18);
+      padding: 16px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo img { height: 40px; }
+    header button {
+      background: #ff7a18; color: #000; border: none;
+      padding: 10px 18px; font-weight: bold; border-radius: 4px;
+      cursor: pointer;
+    }
+    .hero {
+      text-align: center;
+      padding: 60px 20px 40px;
+      background: linear-gradient(135deg, #111, #000);
+    }
+    .hero h1 { font-size: 36px; color: #ff9f43; margin-bottom: 10px; }
+    .hero p { color: #ccc; font-size: 16px; }
 
-      header {
-        background: linear-gradient(135deg, #000000, #ff7a18);
-        padding: 16px 30px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
+    .container { padding: 40px 20px; max-width: 1200px; margin: auto; }
 
-      .logo img {
-        height: 40px;
-      }
+    .auth-box {
+      background: #1c1c1c;
+      padding: 25px;
+      max-width: 420px;
+      margin: auto;
+      border-radius: 8px;
+      box-shadow: 0 0 12px rgba(255, 122, 24, 0.3);
+    }
+    .auth-box h2 { text-align: center; color: #ff7a18; }
+    .auth-box input {
+      width: 100%; padding: 12px; margin: 10px 0;
+      background: #111; border: 1px solid #333; color: white; border-radius: 4px;
+    }
+    .auth-box button {
+      width: 100%; padding: 12px;
+      background: linear-gradient(135deg, #ff7a18, #ff9f43);
+      border: none; font-size: 16px; font-weight: bold;
+      cursor: pointer; border-radius: 4px;
+    }
+    .auth-box a { color: #ff9f43; text-decoration: none; }
 
-      header button {
-        background: #ff7a18;
-        color: #000;
-        border: none;
-        padding: 10px 18px;
-        font-weight: bold;
-        cursor: pointer;
-        border-radius: 4px;
-      }
+    footer {
+      text-align: center; padding: 20px;
+      background: #000; color: #aaa; margin-top: 60px;
+    }
+  </style>
+</head>
 
-      .hero {
-        text-align: center;
-        padding: 60px 20px 40px;
-        background: linear-gradient(135deg, #111, #000);
-      }
+<body>
+<header>
+  <div class="logo">
+    <img src="https://www.whizlabs.com/_next/static/media/Logo_white.d28d6818.svg" />
+  </div>
+  <button onclick="location.href='signup.html'">Signup</button>
+</header>
 
-      .hero h1 {
-        font-size: 36px;
-        color: #ff9f43;
-        margin-bottom: 10px;
-      }
+<section class="hero">
+  <h1>WhizCloud – E-Learning Platform</h1>
+  <p>Learn Cloud, DevOps, AI, and Modern Technologies</p>
+</section>
 
-      .hero p {
-        color: #ccc;
-        font-size: 16px;
-      }
+<div class="container">
+  <div class="auth-box">
+    <h2>Login</h2>
 
-      .container {
-        padding: 40px 20px;
-        max-width: 1200px;
-        margin: auto;
-      }
+    <input id="email" type="email" placeholder="Email address" />
+    <input id="password" type="password" placeholder="Password" />
 
-      .auth-box {
-        background: #1c1c1c;
-        padding: 25px;
-        max-width: 420px;
-        margin: auto;
-        border-radius: 8px;
-        box-shadow: 0 0 12px rgba(255, 122, 24, 0.3);
-      }
+    <button onclick="loginUser()">Login</button>
 
-      .auth-box h2 {
-        text-align: center;
-        color: #ff7a18;
-      }
+    <p style="text-align:center; margin-top:10px;">
+      New user? <a href="signup.html">Sign up</a>
+    </p>
 
-      .auth-box input {
-        width: 100%;
-        padding: 12px;
-        margin: 10px 0;
-        background: #111;
-        border: 1px solid #333;
-        color: white;
-        border-radius: 4px;
-      }
+    <p id="msg" style="text-align:center; margin-top:10px;"></p>
+  </div>
+</div>
 
-      .auth-box button {
-        width: 48%;
-        padding: 12px;
-        background: linear-gradient(135deg, #ff7a18, #ff9f43);
-        border: none;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        border-radius: 4px;
-        margin-top: 8px;
-      }
+<footer>© 2026 WhizCloud LMS</footer>
 
-      #msg {
-        margin-top: 12px;
-        text-align: center;
-        font-size: 14px;
-      }
+<script>
+async function loginUser() {
+  const msgEl = document.getElementById("msg");
+  msgEl.innerText = "Checking...";
+  msgEl.style.color = "#ff9f43";
 
-      footer {
-        text-align: center;
-        padding: 20px;
-        background: #000;
-        color: #aaa;
-        margin-top: 60px;
-      }
-    </style>
-  </head>
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-  <body>
-    <header>
-      <div class="logo">
-        <img
-          src="https://www.whizlabs.com/_next/static/media/Logo_white.d28d6818.svg"
-          alt="WhizCloud Logo"
-        />
-      </div>
-    </header>
+  if (!email || !password) {
+    msgEl.innerText = "Please fill all fields";
+    msgEl.style.color = "red";
+    return;
+  }
 
-    <section class="hero">
-      <h1>WhizCloud – E-Learning Platform</h1>
-      <p>Cloud • DevOps • AI • Generative AI</p>
-    </section>
+  try {
+    const res = await fetch("/login", {
+      method: "POST",
+      headers: { "Content-Type":"application/json" },
+      body: JSON.stringify({ email, password })
+    });
 
-    <div class="container">
-      <div class="auth-box">
-        <h2>User Portal</h2>
+    const result = await res.json();
 
-        <input id="email" type="email" placeholder="Email address" />
-        <input id="username" type="text" placeholder="Username (only for signup)" />
-        <input id="password" type="password" placeholder="Password" />
+    if (!res.ok) {
+      msgEl.innerText = result.message;
+      msgEl.style.color = "red";
+      return;
+    }
 
-        <div style="display:flex; justify-content:space-between;">
-          <button onclick="login()">Login</button>
-          <button onclick="signup()">Signup</button>
-        </div>
+    msgEl.innerText = `Welcome ${result.user}! 🎉`;
+    msgEl.style.color = "lightgreen";
 
-        <p id="msg"></p>
-      </div>
-    </div>
+  } catch (e) {
+    msgEl.innerText = "Backend unreachable (ALB/ECS)";
+    msgEl.style.color = "red";
+  }
+}
+</script>
 
-    <script>
-      const apiBase = ""; // empty means uses same ALB domain
-
-      async function signup() {
-        const msg = document.getElementById("msg");
-        msg.innerText = "Registering...";
-        msg.style.color = "#ff9f43";
-
-        const email = document.getElementById("email").value;
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
-
-        if (!email || !username || !password) {
-          msg.innerText = "❌ All fields required for signup";
-          msg.style.color = "red";
-          return;
-        }
-
-        try {
-          const res = await fetch(apiBase + "/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, username, password }),
-          });
-
-          const data = await res.json();
-
-          if (res.ok) {
-            msg.innerText = "✅ " + data.message;
-            msg.style.color = "lightgreen";
-          } else {
-            msg.innerText = "❌ " + (data.message || "Signup failed");
-            msg.style.color = "red";
-          }
-        } catch {
-          msg.innerText = "❌ Backend unreachable";
-          msg.style.color = "red";
-        }
-      }
-
-      async function login() {
-        const msg = document.getElementById("msg");
-        msg.innerText = "Logging in...";
-        msg.style.color = "#ff9f43";
-
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-
-        if (!email || !password) {
-          msg.innerText = "❌ Email + password required";
-          msg.style.color = "red";
-          return;
-        }
-
-        try {
-          const res = await fetch(apiBase + "/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-          });
-
-          const data = await res.json();
-
-          if (res.ok) {
-            msg.innerText = `🎉 Welcome ${data.user}! Login Success`;
-            msg.style.color = "lightgreen";
-          } else {
-            msg.innerText = "❌ " + (data.message || "Login failed");
-            msg.style.color = "red";
-          }
-        } catch {
-          msg.innerText = "❌ Backend unreachable";
-          msg.style.color = "red";
-        }
-      }
-    </script>
-
-    <footer>© 2026 WhizCloud E-Learning Platform</footer>
-  </body>
+</body>
 </html>
 
