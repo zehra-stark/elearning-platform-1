@@ -5,69 +5,41 @@ const path = require("path");
 const app = express();
 app.use(express.json());
 
-// Serve static UI
+// Serve frontend
 app.use(express.static(path.join(__dirname, "public")));
 
-// DB Connection
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
+  host:process.env.DB_HOST,
+  user:process.env.DB_USER,
+  password:process.env.DB_PASSWORD,
+  database:process.env.DB_NAME
 });
 
-// Health route for ALB
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "UP", service: "ELMS" });
-});
+// Health for ALB
+app.get("/health",(req,res)=>res.json({status:"UP",service:"ELMS"}));
 
-// Signup API
-app.post("/register", (req, res) => {
-  const { username, email, password } = req.body;
-
-  if (!username || !email || !password) {
-    return res.status(400).send("Missing fields");
-  }
-
-  db.query(
-    "INSERT INTO users (username,email,password) VALUES (?,?,?)",
-    [username, email, password],
-    (err) => {
-      if (err) {
-        console.log("DB Error:", err);
-        return res.status(500).send("DB Error");
-      }
-      res.status(201).send("User Registered Successfully");
-    }
+// Register
+app.post("/register",(req,res)=>{
+  const {username,email,password}=req.body;
+  db.query("INSERT INTO users(username,email,password) VALUES(?,?,?)",
+    [username,email,password],
+    (err)=> err ? res.send("DB Error") : res.send("User Registered")
   );
 });
 
-// Login API
-app.post("/login", (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).send("Missing login fields");
-  }
-
+// Login
+app.post("/login",(req,res)=>{
+  const {email,password}=req.body;
   db.query(
     "SELECT * FROM users WHERE email=? AND password=?",
-    [email, password],
-    (err, results) => {
-      if (err) {
-        console.log("DB Error:", err);
-        return res.status(500).send("DB Error");
-      }
-      if (results.length === 0) {
-        return res.status(401).send("Invalid Credentials");
-      }
+    [email,password],
+    (err,result)=>{
+      if(err) return res.send("DB Error");
+      if(result.length===0) return res.send("Invalid Credentials");
       res.send("Login Success");
     }
   );
 });
 
-// RUN
-app.listen(3000, () => {
-  console.log("ELMS running on port 3000");
-});
+app.listen(3000,()=>console.log("ELMS running 3000"));
 

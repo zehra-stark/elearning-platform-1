@@ -1,143 +1,109 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="UTF-8" />
   <title>WhizCloud – E-Learning LMS</title>
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
-      margin: 0; font-family: Arial, sans-serif;
-      background: #111; color: #fff;
+      margin:0; font-family: Arial;
+      background:#111; color:#fff;
     }
-
     header {
-      background: linear-gradient(135deg, #000, #ff7a18);
-      padding: 16px 30px;
-      display: flex; justify-content: space-between; align-items: center;
+      background:linear-gradient(135deg,#000,#ff7a18);
+      padding:16px 30px; display:flex; justify-content:space-between;
+      align-items:center;
     }
-
-    .hero {
-      text-align: center;
-      padding: 50px 20px;
-      background: #111;
-    }
-
-    .container {
-      display: flex; justify-content: center;
-      padding: 40px 20px;
-    }
-
-    .box {
-      width: 420px; background: #1c1c1c;
-      padding: 25px; border-radius: 8px;
-      box-shadow: 0 0 12px rgba(255,122,24,0.3);
-    }
-
-    h2 { color: #ff7a18; text-align: center; }
-
-    input {
-      width: 100%; padding: 12px; margin: 10px 0;
-      border-radius: 4px; border: 1px solid #333;
-      background: #111; color: #fff;
-    }
-
     button {
-      width: 100%; padding: 12px;
-      margin-top: 10px;
-      background: linear-gradient(135deg, #ff7a18, #ff9f43);
-      border: none; font-weight: bold;
-      cursor: pointer; border-radius: 4px;
+      background:#ff7a18; border:none; padding:10px 18px;
+      font-weight:bold; cursor:pointer; border-radius:4px;
     }
-
-    .link { text-align: center; margin-top: 10px; }
-    .link a { color: #ff9f43; cursor: pointer; }
-
-    .msg { text-align: center; margin-top: 10px; min-height: 18px; }
+    .auth-box {
+      background:#1c1c1c; width:420px; margin:50px auto;
+      padding:25px; border-radius:8px;
+      box-shadow:0 0 12px rgba(255,122,24,0.3);
+    }
+    input { width:100%; padding:12px; margin:10px 0;
+      background:#111; border:1px solid #333; color:white;
+      border-radius:4px;
+    }
+    .btn-switch {
+      background:none; color:#ff9f43; cursor:pointer;
+      text-decoration:underline; margin-top:8px;
+      text-align:center; display:block;
+    }
   </style>
 </head>
-
 <body>
 
 <header>
-  <div><b>WhizCloud LMS</b></div>
+  <h2>WhizCloud – E-Learning Platform</h2>
 </header>
 
-<section class="hero">
-  <h1>WhizCloud – E-Learning Platform</h1>
-  <p>Learn DevOps, Cloud & AI</p>
-</section>
+<div class="auth-box" id="loginBox">
+  <h2 style="text-align:center;color:#ff7a18;">User Login</h2>
+  <input id="loginEmail" type="email" placeholder="Email"/>
+  <input id="loginPassword" type="password" placeholder="Password"/>
+  <button onclick="login()">Login</button>
+  <div id="loginMsg" style="margin-top:10px;text-align:center;"></div>
+  <span class="btn-switch" onclick="switchToSignup()">New user? Sign up</span>
+</div>
 
-<div class="container">
-
-  <!-- LOGIN BOX -->
-  <div class="box" id="loginBox">
-    <h2>User Login</h2>
-    <input id="loginEmail" type="email" placeholder="Email" />
-    <input id="loginPassword" type="password" placeholder="Password" />
-    <button onclick="login()">Login</button>
-    <div class="link">New user? <a onclick="showSignup()">Sign up</a></div>
-    <div id="loginMsg" class="msg"></div>
-  </div>
-
-  <!-- SIGNUP BOX -->
-  <div class="box" id="signupBox" style="display:none">
-    <h2>User Signup</h2>
-    <input id="signupUsername" type="text" placeholder="Username" />
-    <input id="signupEmail" type="email" placeholder="Email" />
-    <input id="signupPassword" type="password" placeholder="Password" />
-    <button onclick="signup()">Sign Up</button>
-    <div class="link">Already have an account? <a onclick="showLogin()">Login</a></div>
-    <div id="signupMsg" class="msg"></div>
-  </div>
-
+<div class="auth-box" id="signupBox" style="display:none;">
+  <h2 style="text-align:center;color:#ff7a18;">User Signup</h2>
+  <input id="signupUsername" type="text" placeholder="Username"/>
+  <input id="signupEmail" type="email" placeholder="Email"/>
+  <input id="signupPassword" type="password" placeholder="Password"/>
+  <button onclick="register()">Sign Up</button>
+  <div id="signupMsg" style="margin-top:10px;text-align:center;"></div>
+  <span class="btn-switch" onclick="switchToLogin()">Already have an account? Login</span>
 </div>
 
 <script>
-  function showSignup() {
-    document.getElementById("loginBox").style.display = "none";
-    document.getElementById("signupBox").style.display = "block";
-  }
-  function showLogin() {
-    document.getElementById("signupBox").style.display = "none";
-    document.getElementById("loginBox").style.display = "block";
-  }
+async function register() {
+  const msg = document.getElementById("signupMsg");
+  msg.innerText = "Submitting...";
 
-  async function signup() {
-    const msg = document.getElementById("signupMsg");
-    msg.textContent = "Processing…"; msg.style.color = "#ff9f43";
+  const username = signupUsername.value;
+  const email = signupEmail.value;
+  const password = signupPassword.value;
 
-    const username = signupUsername.value;
-    const email = signupEmail.value;
-    const password = signupPassword.value;
+  const response = await fetch("/register", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ username,email,password })
+  });
 
-    const res = await fetch("/register", {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({username,email,password})
-    });
+  const data = await response.text();
+  msg.innerText = data.includes("User Registered") ? "✔ Registered!" : "❌ Error";
+}
 
-    const data = await res.text();
-    msg.textContent = data;
-    msg.style.color = res.ok ? "lightgreen" : "red";
-  }
+async function login() {
+  const msg = document.getElementById("loginMsg");
+  msg.innerText="Checking...";
 
-  async function login() {
-    const msg = document.getElementById("loginMsg");
-    msg.textContent = "Checking…"; msg.style.color = "#ff9f43";
+  const email = loginEmail.value;
+  const password = loginPassword.value;
 
-    const email = loginEmail.value;
-    const password = loginPassword.value;
+  const response = await fetch("/login", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ email,password })
+  });
 
-    const res = await fetch("/login", {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({email,password})
-    });
+  const data = await response.text();
+  msg.innerText = data.includes("Success") ? "✔ Login OK!" : "❌ Invalid!";
+}
 
-    const data = await res.text();
-    msg.textContent = data;
-    msg.style.color = res.ok ? "lightgreen" : "red";
-  }
+function switchToSignup() {
+  loginBox.style.display="none";
+  signupBox.style.display="block";
+}
+
+function switchToLogin() {
+  signupBox.style.display="none";
+  loginBox.style.display="block";
+}
 </script>
 
 </body>
