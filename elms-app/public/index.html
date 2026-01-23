@@ -83,7 +83,7 @@
       }
 
       .auth-box button {
-        width: 100%;
+        width: 48%;
         padding: 12px;
         background: linear-gradient(135deg, #ff7a18, #ff9f43);
         border: none;
@@ -91,43 +91,13 @@
         font-weight: bold;
         cursor: pointer;
         border-radius: 4px;
+        margin-top: 8px;
       }
 
-      .auth-box a {
-        color: #ff9f43;
-        text-decoration: none;
-      }
-
-      .courses {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 20px;
-        margin-top: 50px;
-      }
-
-      .course {
-        background: #1b1b1b;
-        padding: 22px;
-        border-radius: 8px;
-        border-left: 4px solid #ff7a18;
-        transition: transform 0.2s;
-      }
-
-      .course:hover {
-        transform: translateY(-5px);
-      }
-
-      .course h3 {
-        margin-top: 0;
-      }
-
-      .course h3 a {
-        color: #ff9f43;
-        text-decoration: none;
-      }
-
-      .course h3 a:hover {
-        text-decoration: underline;
+      #msg {
+        margin-top: 12px;
+        text-align: center;
+        font-size: 14px;
       }
 
       footer {
@@ -148,123 +118,106 @@
           alt="WhizCloud Logo"
         />
       </div>
-      <button>Login / Signup</button>
     </header>
 
     <section class="hero">
       <h1>WhizCloud – E-Learning Platform</h1>
-      <p>Learn Cloud, DevOps, AI, and Modern Technologies</p>
+      <p>Cloud • DevOps • AI • Generative AI</p>
     </section>
 
     <div class="container">
       <div class="auth-box">
-        <h2>User Signup</h2>
+        <h2>User Portal</h2>
 
-        <input id="username" type="text" placeholder="Username" />
         <input id="email" type="email" placeholder="Email address" />
+        <input id="username" type="text" placeholder="Username (only for signup)" />
         <input id="password" type="password" placeholder="Password" />
 
-        <button onclick="register()">Sign Up</button>
-
-        <p id="msg" style="text-align: center; margin-top: 10px"></p>
-      </div>
-
-      <script>
-        async function register() {
-          const msgEl = document.getElementById("msg");
-          msgEl.innerText = "Submitting...";
-          msgEl.style.color = "#ff9f43";
-
-          const username = document.getElementById("username").value;
-          const email = document.getElementById("email").value;
-          const password = document.getElementById("password").value;
-
-          if (!username || !email || !password) {
-            msgEl.innerText = "❌ Please fill all fields";
-            msgEl.style.color = "red";
-            return;
-          }
-
-          try {
-            const response = await fetch("/register", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ username, email, password }),
-            });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-              msgEl.innerText = "❌ " + (result.message || "Registration failed");
-              msgEl.style.color = "red";
-              return;
-            }
-
-            msgEl.innerText = "✅ " + result.message;
-            msgEl.style.color = "lightgreen";
-          } catch (err) {
-            msgEl.innerText = "❌ Backend unreachable";
-            msgEl.style.color = "red";
-          }
-        }
-      </script>
-
-      <div class="courses">
-        <div class="course">
-          <h3>
-            <a
-              href="https://www.whizlabs.com/aws-certified-ai-practitioner/"
-              target="_blank"
-            >
-              AWS Cloud Fundamentals
-            </a>
-          </h3>
-          <p>AWS core services, architecture, and best practices.</p>
+        <div style="display:flex; justify-content:space-between;">
+          <button onclick="login()">Login</button>
+          <button onclick="signup()">Signup</button>
         </div>
 
-        <div class="course">
-          <h3>
-            <a
-              href="https://www.whizlabs.com/microsoft-azure-certification-az-104/"
-              target="_blank"
-            >
-              Microsoft Azure Administrator (AZ-104)
-            </a>
-          </h3>
-          <p>Manage Azure identities, governance, and compute services.</p>
-        </div>
-
-        <div class="course">
-          <h3>
-            <a
-              href="https://www.whizlabs.com/google-cloud-certified-associate-cloud-engineer/"
-              target="_blank"
-            >
-              Google Cloud Associate Engineer
-            </a>
-          </h3>
-          <p>GCP infrastructure, IAM, and application deployment.</p>
-        </div>
-
-        <div class="course">
-          <h3>
-            <a href="https://www.whizlabs.com/devops-certifications/" target="_blank">
-              DevOps Certifications
-            </a>
-          </h3>
-          <p>CI/CD pipelines, automation, containers, and DevOps tools.</p>
-        </div>
-
-        <div class="course">
-          <h3>
-            <a href="https://www.whizlabs.com/generative-ai/" target="_blank">
-              Generative AI
-            </a>
-          </h3>
-          <p>Prompt engineering, LLMs, and AI-powered applications.</p>
-        </div>
+        <p id="msg"></p>
       </div>
     </div>
+
+    <script>
+      const apiBase = ""; // empty means uses same ALB domain
+
+      async function signup() {
+        const msg = document.getElementById("msg");
+        msg.innerText = "Registering...";
+        msg.style.color = "#ff9f43";
+
+        const email = document.getElementById("email").value;
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        if (!email || !username || !password) {
+          msg.innerText = "❌ All fields required for signup";
+          msg.style.color = "red";
+          return;
+        }
+
+        try {
+          const res = await fetch(apiBase + "/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, username, password }),
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            msg.innerText = "✅ " + data.message;
+            msg.style.color = "lightgreen";
+          } else {
+            msg.innerText = "❌ " + (data.message || "Signup failed");
+            msg.style.color = "red";
+          }
+        } catch {
+          msg.innerText = "❌ Backend unreachable";
+          msg.style.color = "red";
+        }
+      }
+
+      async function login() {
+        const msg = document.getElementById("msg");
+        msg.innerText = "Logging in...";
+        msg.style.color = "#ff9f43";
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        if (!email || !password) {
+          msg.innerText = "❌ Email + password required";
+          msg.style.color = "red";
+          return;
+        }
+
+        try {
+          const res = await fetch(apiBase + "/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            msg.innerText = `🎉 Welcome ${data.user}! Login Success`;
+            msg.style.color = "lightgreen";
+          } else {
+            msg.innerText = "❌ " + (data.message || "Login failed");
+            msg.style.color = "red";
+          }
+        } catch {
+          msg.innerText = "❌ Backend unreachable";
+          msg.style.color = "red";
+        }
+      }
+    </script>
 
     <footer>© 2026 WhizCloud E-Learning Platform</footer>
   </body>
