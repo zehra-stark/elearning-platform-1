@@ -13,7 +13,6 @@
         color: #fff;
       }
 
-      /* HEADER */
       header {
         background: linear-gradient(135deg, #000000, #ff7a18);
         padding: 16px 30px;
@@ -36,7 +35,6 @@
         border-radius: 4px;
       }
 
-      /* HERO */
       .hero {
         text-align: center;
         padding: 60px 20px 40px;
@@ -54,14 +52,12 @@
         font-size: 16px;
       }
 
-      /* CONTAINER */
       .container {
         padding: 40px 20px;
         max-width: 1200px;
         margin: auto;
       }
 
-      /* AUTH BOX */
       .auth-box {
         background: #1c1c1c;
         padding: 25px;
@@ -102,7 +98,6 @@
         text-decoration: none;
       }
 
-      /* COURSES */
       .courses {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -126,7 +121,6 @@
         margin-top: 0;
       }
 
-      /* REMOVE DEFAULT LINK STYLES */
       .course h3 a {
         color: #ff9f43;
         text-decoration: none;
@@ -147,7 +141,6 @@
   </head>
 
   <body>
-    <!-- NAVBAR -->
     <header>
       <div class="logo">
         <img
@@ -158,25 +151,64 @@
       <button>Login / Signup</button>
     </header>
 
-    <!-- HERO -->
     <section class="hero">
       <h1>WhizCloud – E-Learning Platform</h1>
       <p>Learn Cloud, DevOps, AI, and Modern Technologies</p>
     </section>
 
     <div class="container">
-      <!-- LOGIN -->
       <div class="auth-box">
-        <h2>User Login</h2>
-        <input type="email" placeholder="Email address" />
-        <input type="password" placeholder="Password" />
-        <button>Login</button>
-        <p style="text-align: center; margin-top: 10px">
-          New user? <a href="#">Sign up</a>
-        </p>
+        <h2>User Signup</h2>
+
+        <input id="username" type="text" placeholder="Username" />
+        <input id="email" type="email" placeholder="Email address" />
+        <input id="password" type="password" placeholder="Password" />
+
+        <button onclick="register()">Sign Up</button>
+
+        <p id="msg" style="text-align: center; margin-top: 10px"></p>
       </div>
 
-      <!-- COURSES -->
+      <script>
+        async function register() {
+          const msgEl = document.getElementById("msg");
+          msgEl.innerText = "Submitting...";
+          msgEl.style.color = "#ff9f43";
+
+          const username = document.getElementById("username").value;
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+
+          if (!username || !email || !password) {
+            msgEl.innerText = "❌ Please fill all fields";
+            msgEl.style.color = "red";
+            return;
+          }
+
+          try {
+            const response = await fetch("/register", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ username, email, password }),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+              msgEl.innerText = "❌ " + (result.message || "Registration failed");
+              msgEl.style.color = "red";
+              return;
+            }
+
+            msgEl.innerText = "✅ " + result.message;
+            msgEl.style.color = "lightgreen";
+          } catch (err) {
+            msgEl.innerText = "❌ Backend unreachable";
+            msgEl.style.color = "red";
+          }
+        }
+      </script>
+
       <div class="courses">
         <div class="course">
           <h3>
@@ -216,10 +248,7 @@
 
         <div class="course">
           <h3>
-            <a
-              href="https://www.whizlabs.com/devops-certifications/"
-              target="_blank"
-            >
+            <a href="https://www.whizlabs.com/devops-certifications/" target="_blank">
               DevOps Certifications
             </a>
           </h3>
@@ -240,4 +269,4 @@
     <footer>© 2026 WhizCloud E-Learning Platform</footer>
   </body>
 </html>
- 
+
